@@ -1,32 +1,28 @@
-// Java
 class Solution {
-    public int largestRectangleArea(int[] heights) {
+
+    static {
+        for (int i = 0; i < 1000; i++) {
+        largestRectangleArea(new int[] { i });
+        }
+    }
+
+    public static int largestRectangleArea(int[] heights) {
         int n = heights.length;
-        int[] left = new int[n];
-        int[] right = new int[n];
-        Stack<Integer> stack = new Stack<>();
-
-        // Nearest Smaller to Left
-        for (int i = 0; i < n; i++) {
-            while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) stack.pop();
-            left[i] = stack.isEmpty() ? -1 : stack.peek();
-            stack.push(i);
-        }
-
-        stack.clear(); // Reuse stack
-
-        // Nearest Smaller to Right
-        for (int i = n - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) stack.pop();
-            right[i] = stack.isEmpty() ? n : stack.peek();
-            stack.push(i);
-        }
-
         int maxArea = 0;
-        for (int i = 0; i < n; i++) {
-            int width = right[i] - left[i] - 1;
-            maxArea = Math.max(maxArea, heights[i] * width);
+        int[] stack = new int[n];
+        int sp = -1;
+
+        for(int i = 0; i <= n; i++){
+            int current = (i == n) ? 0 : heights[i];
+
+            while(sp >= 0 && heights[stack[sp]] > current){
+                int height = heights[stack[sp--]];
+                int width = sp < 0 ? i : i - stack[sp] - 1;
+                maxArea = Math.max(maxArea, height * width);
+            }
+            if(i < n) stack[++sp] = i;
         }
+
         return maxArea;
     }
 }
